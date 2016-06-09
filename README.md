@@ -10,6 +10,8 @@ operation mode, switch for turning videostream on/off etc.
 First commit functions:
 * videostream. Rotated depending on mounting
 * Switch to enable/disable videostream
+
+More info: http://www.sundback.com/wp/tag/camdevice/
  
 
 To view stream:

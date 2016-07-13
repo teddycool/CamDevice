@@ -23,7 +23,7 @@ class Main(object):
             framestarttime = time.time()
             frame = self._mainLoop.update()
             self._mainLoop.draw(frame)
-            #time.sleep(0.01)
+            time.sleep(0.05)
 
 
 #Testcode to run module. Standard Python way of testing modules.

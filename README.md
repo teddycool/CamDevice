@@ -17,6 +17,6 @@ More info: http://www.sundback.com/wp/tag/camdevice/
 To view stream:
 sudo python Main.py
 
-http://cam-ip:8080/?action=stream 
+http://cam-ip:8080/stream_simple.html
 
 

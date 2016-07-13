@@ -1,5 +1,5 @@
 #!/usr/bin/python
-
+#ACCELEROMETER
 import smbus
 import math
 import time

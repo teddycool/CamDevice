@@ -80,7 +80,7 @@ class Vision(object):
     def draw(self, frame, framerate=0, text = ""):
         #self._contourFinder.draw(frame)
         if deviceconfig["Vision"]["PrintFrameRate"] and framerate!=0:
-            cv2.putText(frame, "Framerate: " + str(framerate), (5,150),cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255), 2)
+            cv2.putText(frame, "Framerate: " + str(framerate), (10, 80),cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255), 2)
         if text != "":
             cv2.putText(frame, text , (5, self._cam.resolution[1]/2), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255),2)
         #Write to actual frame for MJPG streamer

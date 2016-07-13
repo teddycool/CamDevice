@@ -1,4 +1,6 @@
 #!/usr/bin/python
+#COMPASS
+
 import smbus
 import time
 import math

@@ -8,6 +8,7 @@ from Inputs import IoInputs
 from Actuators import LedIndicator
 #Global GPIO used by all...
 import RPi.GPIO as GPIO
+import os
 from CamDeviceConfig import deviceconfig
 from Sensors import gy521, gy273
 
@@ -25,7 +26,6 @@ class MainLoop(object):
         self._onLed =  LedIndicator.LedIndicator(GPIO, deviceconfig["IO"]["GreenLed"])
         self._streamLed = LedIndicator.LedIndicator(GPIO, deviceconfig["IO"]["YellowLed"])
         #Move to statemachine...
-
         self._streamLed = LedIndicator.LedIndicator(GPIO, deviceconfig["IO"]["YellowLed"])
 
     def initialize(self):
@@ -54,6 +54,11 @@ class MainLoop(object):
             self._stream = False
             self._streamLed.activate(False)
 
+        if self._resetButton.update() == "LongPressed":
+            print os.system('sudo reboot')
+
+        self._calButton.update()
+
         print "Accelerometer data: " + str(self._accel.getAccelerometerdata(True))
         print "Compass data:" + str(self._comp.getXYZ())
 
@@ -71,7 +76,9 @@ class MainLoop(object):
     def draw(self, frame):
         start = time.time()
         #frame = self._currentStateLoop.draw(frame)
-        self._streamSwitch.draw(frame,"StreamSwitch",10, 50)
+        self._streamSwitch.draw(frame,"StreamSwitch",10, 20)
+        self._resetButton.draw(frame,"ResetButton",10, 40)
+        self._calButton.draw(frame, "CalButton", 10, 60)
         if self._stream:
             framerate = 1/(time.time()-self._lastframetime)
             self._lastframetime= time.time()

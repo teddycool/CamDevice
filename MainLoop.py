@@ -1,7 +1,5 @@
 __author__ = 'teddycool'
-#State-switching and handling of general rendering
-#from Inputs import Inputs
-#from Board import Board
+
 from Vision import Vision
 import time
 from Inputs import IoInputs
@@ -23,10 +21,10 @@ class MainLoop(object):
         self._calButton = IoInputs.PushButton(GPIO, deviceconfig["IO"]["GreenButton"])
         self._resetButton = IoInputs.PushButton(GPIO, deviceconfig["IO"]["RedButton"])
         self._streamSwitch = IoInputs.OnOnSwitch(GPIO, deviceconfig["IO"]["Switch1.1"], deviceconfig["IO"]["Switch1.2"])
+
         self._onLed =  LedIndicator.LedIndicator(GPIO, deviceconfig["IO"]["GreenLed"])
         self._streamLed = LedIndicator.LedIndicator(GPIO, deviceconfig["IO"]["YellowLed"])
-        #Move to statemachine...
-        self._streamLed = LedIndicator.LedIndicator(GPIO, deviceconfig["IO"]["YellowLed"])
+        self._resetLed = LedIndicator.LedIndicator(GPIO, deviceconfig["IO"]["RedLed"])
 
     def initialize(self):
         print "Main init..."
@@ -47,6 +45,7 @@ class MainLoop(object):
         start = time.time()
         print "Main update time: " + str(time.time() - start)
         frame = self._vision.update()
+
         if self._streamSwitch.update() == 'ON1':
             self._stream = True
             self._streamLed.activate(True)
@@ -54,10 +53,19 @@ class MainLoop(object):
             self._stream = False
             self._streamLed.activate(False)
 
-        if self._resetButton.update() == "LongPressed":
-            print os.system('sudo reboot')
+        reset = self._resetButton.update()
+        if reset == "Pressed":
+            self._resetLed.activate(True)
+        if reset == "LongPressed":
+            self._resetLed.activate(False)
+            self._streamLed.activate(False)
+            self._onLed.activate(False)
+            print "Rebooting..."
+            os.system('sudo reboot')
+        if reset == "Released":
+            self._resetLed.activate(False)
 
-        self._calButton.update()
+        calibrate = self._calButton.update()
 
         print "Accelerometer data: " + str(self._accel.getAccelerometerdata(True))
         print "Compass data:" + str(self._comp.getXYZ())
@@ -84,11 +92,6 @@ class MainLoop(object):
             self._lastframetime= time.time()
             self._vision.draw(frame, framerate) #Actually draw frame to mjpeg streamer...
             print "Main draw time: " + str(time.time()-start)
-
-
-    def changeState(self, newstate):
-        self._currentStateLoop = self._state[newstate]
-        self._currentStateLoop.initialize()
 
     def __del__(self):
         self._onLed.activate(False)
